@@ -7,31 +7,99 @@
 	$(){
 		var tabuleiro = {
 			that = this,
-
 			tab = [][],
-
-			initTabuleiro = function() {
-				for ( i=0; i < 4; i++ ) {			
-					for ( j=0; j < 4; j++ ) {
-						tab[i][j] = 0;
+			
+			MAX = 3,			
+			MIN = 0,		
+			INITIAL_VALUE = 0,
+			
+			iterTab = function( )
+			
+			moves = [ { 
+						direction = 'Left', 
+						keyCode = 37, 
+						limit = that.MIN, 
+						iter = function( callback ){
+							for ( i = that.MIN; i <= that.MAX; i++ ) {
+								for ( j = that.MIN; j <= that.MAX; j++ ) {
+									if ( that.tab[j][i] != that.INITIAL_VALUE ) {
+										count = 1;
+										while ( i - count != that.MIN ) {
+											count)
+										}
+									}
+								}
+							}
+							
+							if ( typeof callback === 'function' ) {
+								callback.call( that );
+							}
+						}
+						},
+					   { direction = 'Right', keyCode = 39, limit = that.MAX, axis = 'x' },
+					   { direction = 'Up', keyCode = 38, limit = that.MIN, axis = 'y'},
+					   { direction = 'Down', keyCode = 40, limit = that.MAX, axis = 'y'} ],
+					   
+			returnMoveByKeyCode = function( keyCode ) {
+				for ( move in that.moves ) {
+					if ( move.keyCode === keyCode ) {
+						return move;
 					}
 				}
-			
-				var firstY = Math.floor(Math.random() * 4);
-				var firstX = Math.floor(Math.random() * 4);
-				
-				that.tab[firstX][firstY] = 2;
+				return false;
 			}
 			
-			renderTabuleiro = function() {
+			initTab = function() {
+				for ( i = that.MIN; i < that.MAX; i++ ) {			
+					for ( j = that.MIN; j < that.MAX; j++ ) {
+						tab[i][j] = that.INITIAL_VALUE;
+					}
+				}		
+				that.randPosition( 2 );
+				that.randPosition( 2 );
+			},
+			
+			randPosition = function( value ) {
+				var firstY, firstX = 0;
 				
+				// acha um espaco vazio
+				do {
+					firstY = Math.floor(Math.random() * that.MAX);
+					firstX = Math.floor(Math.random() * that.MAX);					
+				} while( that.tab[firstX][firstY] == that.INITIAL_VALUE );
+				
+				that.tab[firstX][firstY] = value;
+				
+				return that.tab[firstX][firstY];
+			},
+			
+			renderTab = function() {
+				
+			},
+			
+			move = function( keyCode, operation, hitLimit ) {
+				for ( i = that.MIN; i < that.MAX; i++ ) {
+					for ( j = that.MIN; j < that.MAX; j++ ) {
+						if ( tab[i][j] != that.INITIAL_VALUE && that.notHitLimit(that.tab[i][j], xAxis, direction) ;
+					}
+				}
 			}
 			
 			movLeft = function() {
 				
+			},
+			
+			movRight = function() {
+			
+			},
+			
+			movUp = function(){
+			
+			},
+			
+			movDown = function(){
+			
 			}
-			
-			
 		};
 
 
