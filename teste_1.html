@@ -4,124 +4,138 @@
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 <script type="text/javascript">
-	$(){
-		var tabuleiro = {
-			that = this,
-			tab = [][],
-			
-			MAX = 3,			
-			MIN = 0,		
-			INITIAL_VALUE = 0,
-			
-			iterTab = function( )
-			
-			moves = [ { 
-						direction = 'Left', 
-						keyCode = 37, 
-						limit = that.MIN, 
-						iter = function( callback ){
-							for ( i = that.MIN; i <= that.MAX; i++ ) {
-								for ( j = that.MIN; j <= that.MAX; j++ ) {
-									if ( that.tab[j][i] != that.INITIAL_VALUE ) {
-										count = 1;
-										while ( i - count != that.MIN ) {
-											count)
-										}
+	var tabuleiro = {
+		tab : [],
+		
+		MAX : 3,			
+		MIN : 0,		
+		INITIAL_VALUE : 0,
+		
+		iterTab : function( ){},
+		
+		moves : [ { 
+					direction : 'Left', 
+					keyCode : 37, 
+					limit : this.MIN, 
+					iter : function( callback ){
+						var stopped = false;
+						var column = 0;
+						for ( i = this.MIN; i <= this.MAX; i++ ) {
+							for ( j = this.MIN; j <= this.MAX; j++ ) {
+								stopped = false;
+								column  = j;
+								while (  column > this.MIN && !stopped ) {  // this.tab[i][j] != this.INITIAL_VALUE &&
+									if ( this.tab[i][column - 1] == this.tab[i][column] ) {
+										this.tab[i][column - 1] += this.tab[i][column];
+										this.tab[i][column] = this.INITIAL_VALUE;
+										stopped = true;
+									}
+									else if ( this.tab[i][column - 1] == this.INITIAL_VALUE ) {
+										this.tab[i][column - 1] = this.tab[i][column];
+										column -= 1;
+									} else {
+										stopped = true;
 									}
 								}
 							}
-							
-							if ( typeof callback === 'function' ) {
-								callback.call( that );
-							}
 						}
-						},
-					   { direction = 'Right', keyCode = 39, limit = that.MAX, axis = 'x' },
-					   { direction = 'Up', keyCode = 38, limit = that.MIN, axis = 'y'},
-					   { direction = 'Down', keyCode = 40, limit = that.MAX, axis = 'y'} ],
-					   
-			returnMoveByKeyCode = function( keyCode ) {
-				for ( move in that.moves ) {
-					if ( move.keyCode === keyCode ) {
-						return move;
+						
+						if ( typeof callback === 'function' ) {
+							callback.call( this );
+						}
 					}
-				}
-				return false;
-			}
-			
-			initTab = function() {
-				for ( i = that.MIN; i < that.MAX; i++ ) {			
-					for ( j = that.MIN; j < that.MAX; j++ ) {
-						tab[i][j] = that.INITIAL_VALUE;
-					}
-				}		
-				that.randPosition( 2 );
-				that.randPosition( 2 );
-			},
-			
-			randPosition = function( value ) {
-				var firstY, firstX = 0;
-				
-				// acha um espaco vazio
-				do {
-					firstY = Math.floor(Math.random() * that.MAX);
-					firstX = Math.floor(Math.random() * that.MAX);					
-				} while( that.tab[firstX][firstY] == that.INITIAL_VALUE );
-				
-				that.tab[firstX][firstY] = value;
-				
-				return that.tab[firstX][firstY];
-			},
-			
-			renderTab = function() {
-				
-			},
-			
-			move = function( keyCode, operation, hitLimit ) {
-				for ( i = that.MIN; i < that.MAX; i++ ) {
-					for ( j = that.MIN; j < that.MAX; j++ ) {
-						if ( tab[i][j] != that.INITIAL_VALUE && that.notHitLimit(that.tab[i][j], xAxis, direction) ;
-					}
+					},
+				   { direction : 'Right', keyCode : 39, limit : this.MAX, axis : 'x' },
+				   { direction : 'Up', keyCode : 38, limit : this.MIN, axis : 'y'},
+				   { direction : 'Down', keyCode : 40, limit : this.MAX, axis : 'y'} ], 
+				   
+		returnMoveByKeyCode : function( keyCode ) {
+			for ( move in this.moves ) {
+				if ( move.keyCode === keyCode ) {
+					return move;
 				}
 			}
+			return false;
+		},
+		
+		initTab : function( callback ) {
+			for ( i = this.MIN; i < this.MAX; i++ ) {			
+				for ( j = this.MIN; j < this.MAX; j++ ) {
+					if ( j == this.MIN ) {
+						this.tab[i] = [];
+					}
+					this.tab[i][j] = this.INITIAL_VALUE;
+				}
+			}		
+			this.randPosition( 2 );
+			this.randPosition( 2 );
 			
-			movLeft = function() {
+			if ( typeof callback === 'function' ) {
+				callback.call( this );
+			}
+		},
+		
+		randPosition : function( value ) {
+			var firstY, firstX = 0;
+			
+			// acha um espaco vazio
+			do {
+				firstY = Math.floor(Math.random() * this.MAX);
+				firstX = Math.floor(Math.random() * this.MAX);
 				
-			},
+				console.log('xxx');
+			} while( this.tab[firstX][firstY] == this.INITIAL_VALUE );
 			
-			movRight = function() {
+			this.tab[firstX][firstY] = value;
 			
-			},
-			
-			movUp = function(){
-			
-			},
-			
-			movDown = function(){
-			
+			return this.tab[firstX][firstY];
+		},
+		
+		renderTab : function() {
+			var d;
+
+			for ( i = this.MIN; i <= this.MAX; i++ ) {
+				for ( j = this.MIN; j <= this.MAX; j++ ) {
+					d = document.getElementById('td'+ i + j);
+					d.innerHTML = this.tab[i][j];
+				}
+			}
+		}
+	};
+
+	
+	
+	function iniciaJogo() {
+		tabuleiro.initTab( );
+		
+		document.keydown = function(e){
+			var move = null;
+			if ( e.keyCode >= 37 && e.keyCode <= 40 ){
+				move = tabuleiro.returnMoveByKeyCode( e.KeyCode );
+				move.iter( tabuleiro.renderTab() );
 			}
 		};
-
-
-		$(document).on("keydown", function(e){
-			if ( e.keyCode == 37 || e.keyIdentifier == 'Left' ){
-				
-			}
-			if (e.keyCode == 39 || e.keyIdentifier == 'Right') {
 	
-			}
-			if (e.keyCode == 40 || e.keyIdentifier == 'Down') {
-	
-			}
-			if (e.keyCode == 38 || e.keyIdentifier == 'Up') {
-	
-			}
-		});
-	
-	};
+	}
 </script>
+<style>
+	table, td {
+		border: 1px solid black;
+	}
+	
+	td {
+		width: 40px;
+		height: 40px;
+		white-space: nowrap;
+	}
+</style>
 </head>
-<body>
-
+<body onload='javascript: iniciaJogo();'>
+	<table>
+		<tr><td id='td00'></td><td id='td01'></td><td id='td02'></td><td id='td03'></td></tr>
+		<tr><td id='td10'></td><td id='td11'></td><td id='td12'></td><td id='td13'></td></tr>
+		<tr><td id='td20'></td><td id='td21'></td><td id='td22'></td><td id='td23'></td></tr>
+		<tr><td id='td30'></td><td id='td31'></td><td id='td32'></td><td id='td33'></td></tr>
+	</table>
 </body>
 </html>
