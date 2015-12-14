@@ -5,6 +5,7 @@
 <title>Insert title here</title>
 <script type="text/javascript">
 	var tabuleiro = {
+        self: this,
 		tab : [],
 		
 		MAX : 3,			
@@ -20,10 +21,14 @@
 					iter : function( callback ){
 						var stopped = false;
 						var column = 0;
+                        
+                        console.log( self );
+                        
 						for ( i = this.MIN; i <= this.MAX; i++ ) {
 							for ( j = this.MIN; j <= this.MAX; j++ ) {
 								stopped = false;
 								column  = j;
+                                
 								while (  column > this.MIN && !stopped ) {  // this.tab[i][j] != this.INITIAL_VALUE &&
 									if ( this.tab[i][column - 1] == this.tab[i][column] ) {
 										this.tab[i][column - 1] += this.tab[i][column];
@@ -52,15 +57,15 @@
 		returnMoveByKeyCode : function( keyCode ) {
 			for ( move in this.moves ) {
 				if ( move.keyCode === keyCode ) {
-					return move;
+					return this.moves[move];
 				}
 			}
 			return false;
 		},
 		
 		initTab : function( callback ) {
-			for ( i = this.MIN; i < this.MAX; i++ ) {			
-				for ( j = this.MIN; j < this.MAX; j++ ) {
+			for ( i = this.MIN; i <= this.MAX; i++ ) {			
+				for ( j = this.MIN; j <= this.MAX; j++ ) {
 					if ( j == this.MIN ) {
 						this.tab[i] = [];
 					}
@@ -77,14 +82,16 @@
 		
 		randPosition : function( value ) {
 			var firstY, firstX = 0;
-			
+			var stop = false;
+            
 			// acha um espaco vazio
 			do {
-				firstY = Math.floor(Math.random() * this.MAX);
-				firstX = Math.floor(Math.random() * this.MAX);
-				
-				console.log('xxx');
-			} while( this.tab[firstX][firstY] == this.INITIAL_VALUE );
+				firstY = Math.ceil(Math.random() * this.MAX);
+				firstX = Math.ceil(Math.random() * this.MAX);
+                console.log( firstX );
+                console.log( firstY );
+                stop = (this.tab[firstX][firstY] == this.INITIAL_VALUE);
+			} while( !stop );
 			
 			this.tab[firstX][firstY] = value;
 			
@@ -106,17 +113,17 @@
 	
 	
 	function iniciaJogo() {
-		tabuleiro.initTab( );
-		
-		document.keydown = function(e){
-			var move = null;
-			if ( e.keyCode >= 37 && e.keyCode <= 40 ){
-				move = tabuleiro.returnMoveByKeyCode( e.KeyCode );
-				move.iter( tabuleiro.renderTab() );
-			}
-		};
-	
+		tabuleiro.initTab( );	
 	}
+    
+    
+    document.onkeydown = function(e){
+        var move = null;
+        if ( e.keyCode >= 37 && e.keyCode <= 40 ){
+            move = tabuleiro.returnMoveByKeyCode( e.KeyCode );            
+            move.iter( tabuleiro.renderTab() );
+        }
+    };
 </script>
 <style>
 	table, td {
