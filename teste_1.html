@@ -4,66 +4,86 @@
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 <script type="text/javascript">
-	var tabuleiro = {
-        self: this,
-		tab : [],
+	var tabuleiro = function(){
+        that = this;
+        
+		this.tab = [];
+		this.MAX = 3;			
+		this.MIN = 0;		
+		this.INITIAL_VALUE = 0;
 		
-		MAX : 3,			
-		MIN : 0,		
-		INITIAL_VALUE : 0,
-		
-		iterTab : function( ){},
-		
-		moves : [ { 
-					direction : 'Left', 
-					keyCode : 37, 
-					limit : this.MIN, 
-					iter : function( callback ){
-						var stopped = false;
-						var column = 0;
-                        
-                        console.log( self );
-                        
-						for ( i = this.MIN; i <= this.MAX; i++ ) {
-							for ( j = this.MIN; j <= this.MAX; j++ ) {
-								stopped = false;
-								column  = j;
-                                
-								while (  column > this.MIN && !stopped ) {  // this.tab[i][j] != this.INITIAL_VALUE &&
-									if ( this.tab[i][column - 1] == this.tab[i][column] ) {
-										this.tab[i][column - 1] += this.tab[i][column];
-										this.tab[i][column] = this.INITIAL_VALUE;
-										stopped = true;
-									}
-									else if ( this.tab[i][column - 1] == this.INITIAL_VALUE ) {
-										this.tab[i][column - 1] = this.tab[i][column];
-										column -= 1;
-									} else {
-										stopped = true;
-									}
-								}
-							}
-						}
-						
-						if ( typeof callback === 'function' ) {
-							callback.call( this );
-						}
-					}
-					},
-				   { direction : 'Right', keyCode : 39, limit : this.MAX, axis : 'x' },
-				   { direction : 'Up', keyCode : 38, limit : this.MIN, axis : 'y'},
-				   { direction : 'Down', keyCode : 40, limit : this.MAX, axis : 'y'} ], 
+        this.returnAxis = function( keyCode ){
+            var axis = [];
+            
+            for ( i = this.MIN; i <= this.MAX; i++ ) {
+                axis.push( i );
+            }
+            
+            switch ( keyCode ) {
+                case 37: // left
+                    return { x : axis, y : axis };
+                    break;
+                case 38: // up
+                    return { x : axis, y : axis.reverse() };
+                    break;
+                case 39: // right
+                    return { x : axis.reverse(), y : axis };
+                    break;
+                case 40: // down
+                    return { x : axis, y : axis };
+                    break;
+            }
+
+        }
+        
+		this.moves = [ { 
+                        direction : 'Left', 
+                        keyCode : 37, 
+                        limit : that.MIN, 
+                        iter : function( callback ){
+                            var stopped = false;
+                            var column = 0;
+
+                            for ( i = that.MIN; i <= that.MAX; i++ ) {
+                                for ( j = that.MIN; j <= that.MAX; j++ ) {
+                                    stopped = false;
+                                    column  = j;
+
+                                    while (  column > that.MIN && !stopped ) {  // that.tab[i][j] != that.INITIAL_VALUE &&
+                                        if ( that.tab[i][column - 1] == that.tab[i][column] ) {
+                                            that.tab[i][column - 1] += that.tab[i][column];
+                                            that.tab[i][column] = that.INITIAL_VALUE;
+                                            stopped = true;
+                                        }
+                                        else if ( that.tab[i][column - 1] == that.INITIAL_VALUE ) {
+                                            that.tab[i][column - 1] = that.tab[i][column];
+                                            column -= 1;
+                                        } else {
+                                            stopped = true;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if ( typeof callback === 'function' ) {
+                                callback.call( that );
+                            }
+                        }
+                        },
+                       { direction : 'Right', keyCode : 39, limit : that.MAX, axis : 'x' },
+                       { direction : 'Up', keyCode : 38, limit : that.MIN, axis : 'y'},
+                       { direction : 'Down', keyCode : 40, limit : that.MAX, axis : 'y'} ];
 				   
-		returnMoveByKeyCode : function( keyCode ) {
+		this.returnMoveByKeyCode = function( keyCode ) {
 			for ( move in this.moves ) {
 				if ( move.keyCode === keyCode ) {
 					return this.moves[move];
 				}
 			}
 			return false;
-		},
+		};
 		
-		initTab : function( callback ) {
+		this.initTab = function( callback ) {
 			for ( i = this.MIN; i <= this.MAX; i++ ) {			
 				for ( j = this.MIN; j <= this.MAX; j++ ) {
 					if ( j == this.MIN ) {
@@ -78,9 +98,9 @@
 			if ( typeof callback === 'function' ) {
 				callback.call( this );
 			}
-		},
+		};
 		
-		randPosition : function( value ) {
+		this.randPosition = function( value ) {
 			var firstY, firstX = 0;
 			var stop = false;
             
@@ -88,17 +108,16 @@
 			do {
 				firstY = Math.ceil(Math.random() * this.MAX);
 				firstX = Math.ceil(Math.random() * this.MAX);
-                console.log( firstX );
-                console.log( firstY );
+
                 stop = (this.tab[firstX][firstY] == this.INITIAL_VALUE);
 			} while( !stop );
 			
 			this.tab[firstX][firstY] = value;
 			
 			return this.tab[firstX][firstY];
-		},
+		};
 		
-		renderTab : function() {
+		this.renderTab = function() {
 			var d;
 
 			for ( i = this.MIN; i <= this.MAX; i++ ) {
@@ -107,13 +126,14 @@
 					d.innerHTML = this.tab[i][j];
 				}
 			}
-		}
+		};
 	};
 
 	
 	
 	function iniciaJogo() {
-		tabuleiro.initTab( );	
+		tabuleiro = new tabuleiro();
+        tabuleiro.initTab( );	
 	}
     
     
