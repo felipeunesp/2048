@@ -21,59 +21,61 @@
             
             switch ( keyCode ) {
                 case 37: // left
-                    return { x : axis, y : axis };
+                    return { y : axis.reverse(), order : 'firstX', limit : this.MIN };
                     break;
                 case 38: // up
-                    return { x : axis, y : axis.reverse() };
+                    return { x : axis.reverse(), order : 'firstY', limit : this.MIN };
                     break;
                 case 39: // right
-                    return { x : axis.reverse(), y : axis };
+                    return { y : axis, order : 'firstX', limit : this.MAX };
                     break;
                 case 40: // down
-                    return { x : axis, y : axis };
+                    return { x : axis, order : 'firstY', limit : this.MAX };
                     break;
             }
-
+            return false;
         }
         
-		this.moves = [ { 
-                        direction : 'Left', 
-                        keyCode : 37, 
-                        limit : that.MIN, 
-                        iter : function( callback ){
-                            var stopped = false;
-                            var column = 0;
+		this.move = function ( keyCode ) {
+            var stopped = false;
+            var line = 0, column = 0;
+            var axis    = this.returnAxis( keyCode );
+            var firstAxis, secondAxis;
+                            
+            for ( i in firstAxis ) {
+                for ( j in secondAxis ) {
 
-                            for ( i = that.MIN; i <= that.MAX; i++ ) {
-                                for ( j = that.MIN; j <= that.MAX; j++ ) {
-                                    stopped = false;
-                                    column  = j;
+                    if ( axis.order === 'firstX' ) {
 
-                                    while (  column > that.MIN && !stopped ) {  // that.tab[i][j] != that.INITIAL_VALUE &&
-                                        if ( that.tab[i][column - 1] == that.tab[i][column] ) {
-                                            that.tab[i][column - 1] += that.tab[i][column];
-                                            that.tab[i][column] = that.INITIAL_VALUE;
-                                            stopped = true;
-                                        }
-                                        else if ( that.tab[i][column - 1] == that.INITIAL_VALUE ) {
-                                            that.tab[i][column - 1] = that.tab[i][column];
-                                            column -= 1;
-                                        } else {
-                                            stopped = true;
-                                        }
-                                    }
-                                }
-                            }
+                    } else {
 
-                            if ( typeof callback === 'function' ) {
-                                callback.call( that );
-                            }
+                    }
+                    stopped = false;
+                    line    = firstAxis[i];
+                    column  = secondAxis[j];
+
+                    while (  column > that.MIN && !stopped ) {  // that.tab[i][j] != that.INITIAL_VALUE &&
+                        if ( that.tab[i][column - 1] == that.tab[i][column] ) {
+                            that.tab[i][column - 1] += that.tab[i][column];
+                            that.tab[i][column] = that.INITIAL_VALUE;
+                            stopped = true;
                         }
-                        },
-                       { direction : 'Right', keyCode : 39, limit : that.MAX, axis : 'x' },
-                       { direction : 'Up', keyCode : 38, limit : that.MIN, axis : 'y'},
-                       { direction : 'Down', keyCode : 40, limit : that.MAX, axis : 'y'} ];
-				   
+                        else if ( that.tab[i][column - 1] == that.INITIAL_VALUE ) {
+                            that.tab[i][column - 1] = that.tab[i][column];
+                            column -= 1;
+                        } else {
+                            stopped = true;
+                        }
+                    }    
+                }
+            }
+
+            if ( typeof callback === 'function' ) {
+                callback.call( that );
+            }
+        }
+                        
+                    
 		this.returnMoveByKeyCode = function( keyCode ) {
 			for ( move in this.moves ) {
 				if ( move.keyCode === keyCode ) {
