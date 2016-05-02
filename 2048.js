@@ -62,17 +62,25 @@ var Tabuleiro = function () {
         if (this.iniciado === 0) {
             this.iniciar(this.tamanho);
         }
-        if ( this.casas[x][y].estaVazia() ) {
-            return this.casas[x][y];
-        } else {
-            this.casaRandom();
-        }
+        while ( !this.casas[x][y].estaVazia() ) {
+            x = Math.ceil(Math.random() * this.tamanho) - 1;
+            y = Math.ceil(Math.random() * this.tamanho) - 1;
+        } 
+        return this.casas[x][y];
     };
     this.iniciarCasa = function (valor) {
         var casa = this.casaRandom(), valorCasa = valor || 2;
         
         casa.setValor(valorCasa);
     };
+    this.eixoEsquerda = { primeiroEixo : [0,1,2,3], segundoEixo : [0,1,2,3] };
+    this.eixoDireita = { primeiroEixo : [0,1,2,3], segundoEixo : [3,2,1,0] };
+    this.eixoBaixo = { primeiroEixo : [0,1,2,3], segundoEixo : [0,1,2,3] };
+    this.eixoCima = { primeiroEixo : [3,2,1,0 ], segundoEixo : [0,1,2,3] };
+    
+    
+    
+    
     this.moveLeft = function () {
         var i=0, j=0, limite=0;
         
@@ -97,8 +105,126 @@ var Tabuleiro = function () {
                 }
             }
         }
-    }
-    this.pintar = function (){
+    };
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    this.moveLeft = function () {
+        var i=0, j=0, limite=0;
+        
+        this.iterar(this.casas, function () { this.fechada = 0; });
+        
+        for (i=0;i<this.tamanho;i++) {
+            for (j=0;j<this.tamanho;j++) {
+                var p=j;
+                if (p === limite) {
+                    continue;
+                } else {
+                    while (p-1 >= limite) {
+                        
+                        if ((this.casas[i][p-1].estaVazia() || this.casas[i][p-1].valor === this.casas[i][p].valor) && !this.casas[i][p-1].fechada){
+                            this.casas[i][p-1].valor += this.casas[i][p].valor;
+                            this.casas[i][p].valor = 0;
+                            this.casas[i][p-1].fechada = this.casas[i][p-1].estaVazia()?0:1;
+                        }
+                        
+                        p = p-1;
+                    }
+                }
+            }
+        }
+    };
+    this.moveRight = function () {
+        var i=0, j=0, limite=this.tamanho-1;
+        
+        this.iterar(this.casas, function () { this.fechada = 0; });
+        
+        for (i=0;i<this.tamanho;i++) {
+            for (j=limite;j>=0;j--) {
+                var p=j;
+                if (p === limite) {
+                    continue;
+                } else {
+                    while (p+1 <= limite) {
+                        
+                        if ((this.casas[i][p+1].estaVazia() || this.casas[i][p+1].valor === this.casas[i][p].valor) && !this.casas[i][p+1].fechada){
+                            this.casas[i][p+1].valor += this.casas[i][p].valor;
+                            this.casas[i][p].valor = 0;
+                            this.casas[i][p+1].fechada = this.casas[i][p+1].estaVazia()?0:1;
+                        }
+                        
+                        p = p+1;
+                    }
+                }
+            }
+        }
+    };
+    this.moveUp = function () {
+        var i=0, j=0, limite=0;
+        
+        this.iterar(this.casas, function () { this.fechada = 0; });
+        
+        for (i=0;i<this.tamanho;i++) {
+            for (j=limite;j<this.tamanho;j++) {
+                var p=j;
+                if (p === limite) {
+                    continue;
+                } else {
+                    while (p-1 >= limite) {
+                        
+                        if ((this.casas[p-1][i].estaVazia() || this.casas[p-1][i].valor === this.casas[p][i].valor) && !this.casas[p-1][i].fechada){
+                            this.casas[p-1][i].valor += this.casas[p][i].valor;
+                            this.casas[p][i].valor = 0;
+                            this.casas[p-1][i].fechada = this.casas[p-1][i].estaVazia()?0:1;
+                        }
+                        
+                        p = p-1;
+                    }
+                }
+            }
+        }
+    };
+    this.moveDown = function () {
+        var i=0, j=0, limite=this.tamanho-1;
+        
+        this.iterar(this.casas, function () { this.fechada = 0; });
+        
+        for (i=0;i<this.tamanho;i++) {
+            for (j=limite;j>=0;j--) {
+                var p=j;
+                if (p === limite) {
+                    continue;
+                } else {
+                    while (p+1 <= limite) {
+                        
+                        if ((this.casas[p+1][i].estaVazia() || this.casas[p+1][i].valor === this.casas[p][i].valor) && !this.casas[p+1][i].fechada){
+                            this.casas[p+1][i].valor += this.casas[p][i].valor;
+                            this.casas[p][i].valor = 0;
+                            this.casas[p+1][i].fechada = this.casas[p+1][i].estaVazia()?0:1;
+                        }
+                        
+                        p = p+1;
+                    }
+                }
+            }
+        }
+    };
+    this.pintar = function () {
         var d, i, j;
         for ( i = 0; i<this.tamanho; i++ ) {
             for ( j = 0; j<this.tamanho; j++ ) {
@@ -109,22 +235,50 @@ var Tabuleiro = function () {
     };
 };
 
-var tabuleiro = new Tabuleiro();
-tabuleiro.iniciar(4);
-tabuleiro.iniciarCasa(2);
-tabuleiro.iniciarCasa(2);
+
+var tabuleiro = null;
+
+function comecaJogo() {
+    tabuleiro = new Tabuleiro();
+    tabuleiro.iniciar(4);
+    tabuleiro.iniciarCasa(2);
+    tabuleiro.iniciarCasa(2);
+    tabuleiro.pintar();
+    
+    window.addEventListener("keydown", function(evt){
+        switch (evt.keyIdentifier) {
+            case "Left": 
+                tabuleiro.moveLeft();
+                tabuleiro.pintar();
+                tabuleiro.iniciarCasa(2);
+                tabuleiro.pintar();
+                break;
+            case "Right":
+                tabuleiro.moveRight();
+                tabuleiro.pintar();
+                tabuleiro.iniciarCasa(2);
+                tabuleiro.pintar();
+                break;
+            case "Up":
+                tabuleiro.moveUp();
+                tabuleiro.pintar();
+                tabuleiro.iniciarCasa(2);
+                tabuleiro.pintar();
+                break;
+            case "Down":
+                tabuleiro.moveDown();
+                tabuleiro.pintar();
+                tabuleiro.iniciarCasa(2);
+                tabuleiro.pintar();
+                break;
+            default:
+        }
+    });
+}
+
+
+
+
+
 
 var cont = 0;
-var x = setInterval( function(){
-    
-    tabuleiro.pintar();
-    tabuleiro.iniciarCasa(2);
-    tabuleiro.moveLeft();
-    
-    if (cont === 10) {
-        clearInterval(x)
-    };
-    cont++;
-    
-    
-}, 1000);
