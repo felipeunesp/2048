@@ -24,10 +24,10 @@ var Tabuleiro = function () {
     this.iniciado = 0;
     this.casas = [];
     this.iterar = function (obj, callback) {
-        var i=0, j=0;
+        var i = 0, j = 0;
         
-        for (i=0; i<this.tamanho; i++) {
-            for (j=0; j<this.tamanho; j++) {        
+        for (i = 0; i < this.tamanho; i++) {
+            for (j = 0; j < this.tamanho; j++) {
                 if (callback.call(obj[i][j]) === false) {
                     break;
                 }
@@ -40,14 +40,14 @@ var Tabuleiro = function () {
         return !this.iterar(this.casas, estaVazia);
     };
     this.iniciar = function (tamanho) {
-        var i=0; j=0;
+        var i = 0, j = 0;
         
         this.tamanho = tamanho || 4;
         
         if (this.iniciado === 0) {
-            for (i=0; i<this.tamanho; i++) {
-                this.casas[i]=[];
-                for (j=0; j<this.tamanho; j++) {    
+            for (i = 0; i < this.tamanho; i++) {
+                this.casas[i] = [];
+                for (j = 0; j < this.tamanho; j++) {
                     this.casas[i].push(new CasaTabuleiro());
                 }
             }
@@ -62,10 +62,10 @@ var Tabuleiro = function () {
         if (this.iniciado === 0) {
             this.iniciar(this.tamanho);
         }
-        while ( !this.casas[x][y].estaVazia() ) {
+        while (!this.casas[x][y].estaVazia()) {
             x = Math.ceil(Math.random() * this.tamanho) - 1;
             y = Math.ceil(Math.random() * this.tamanho) - 1;
-        } 
+        }
         return this.casas[x][y];
     };
     this.iniciarCasa = function (valor) {
@@ -73,162 +73,72 @@ var Tabuleiro = function () {
         
         casa.setValor(valorCasa);
     };
-    this.eixoEsquerda = { primeiroEixo : [0,1,2,3], segundoEixo : [0,1,2,3] };
-    this.eixoDireita = { primeiroEixo : [0,1,2,3], segundoEixo : [3,2,1,0] };
-    this.eixoBaixo = { primeiroEixo : [0,1,2,3], segundoEixo : [0,1,2,3] };
-    this.eixoCima = { primeiroEixo : [3,2,1,0 ], segundoEixo : [0,1,2,3] };
+    this.retornaEixos = function (direcao) {
+        switch (direcao) {
+        case 37: // esquerda
+            return { x: [0, 1, 2, 3], y: [0, 1, 2, 3], ordem: "linha"};
+        case 39: // direita
+            return { x: [0, 1, 2, 3], y: [3, 2, 1, 0], ordem: "linha"};
+        case 38: // cima
+            return { x: [0, 1, 2, 3], y: [0, 1, 2, 3], ordem: "coluna"};
+        case 40: // baixo
+            return { x: [3, 2, 1, 0], y: [0, 1, 2, 3], ordem: "coluna"};
+        default:
+            return null;
+        }
+    };
     
-    
-    
-    
-    this.moveLeft = function () {
-        var i=0, j=0, limite=0;
+    this.movimento = function (direcao) {
+        var i = 0, j = 0, limite = 0, eixo, transversal, eixos, p, atual, proximo;
         
         this.iterar(this.casas, function () { this.fechada = 0; });
         
-        for (i=0;i<this.tamanho;i++) {
-            for (j=0;j<this.tamanho;j++) {
-                var p=j;
-                if (p === limite) {
-                    continue;
-                } else {
-                    while (p-1 >= limite) {
+        eixos = this.retornaEixos(direcao);
+        
+        if (eixos === null) {
+            return;
+        }
+        
+        if (eixos.ordem === "linha") {
+            eixo = eixos.x;
+            transversal = eixos.y;
+        } else {
+            eixo = eixos.y;
+            transversal = eixos.x;
+        }
+        
+        for (i = 0; i < eixo.length; i++) {
+            for (j = 0; j < transversal.length; j++) {
+                p = 0;
                         
-                        if ((this.casas[i][p-1].estaVazia() || this.casas[i][p-1].valor === this.casas[i][p].valor) && !this.casas[i][p-1].fechada){
-                            this.casas[i][p-1].valor += this.casas[i][p].valor;
-                            this.casas[i][p].valor = 0;
-                            this.casas[i][p-1].fechada = this.casas[i][p-1].estaVazia()?0:1;
-                        }
-                        
-                        p = p-1;
+                while (p < transversal.length - 1) {
+
+                    if (eixos.ordem === "linha") {
+                        atual = this.casas[eixo[i]][transversal[p]];
+                        proximo =  this.casas[eixo[i]][transversal[p + 1]];
+                    } else {
+                        atual = this.casas[transversal[p]][eixo[i]];
+                        proximo = this.casas[transversal[p + 1]][eixo[i]];
                     }
+
+                    if ((atual.estaVazia() || atual.valor === proximo.valor) && !atual.fechada) {
+                        atual.fechada = atual.estaVazia() ? 0 : 1;
+                        atual.valor += proximo.valor;
+                        proximo.valor = 0;
+                    } else if (!atual.estaVazia() && atual.valor !== proximo.valor) {
+                        atual.fechada = 1;
+                    }
+                    p = p + 1;
                 }
             }
         }
     };
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    this.moveLeft = function () {
-        var i=0, j=0, limite=0;
         
-        this.iterar(this.casas, function () { this.fechada = 0; });
-        
-        for (i=0;i<this.tamanho;i++) {
-            for (j=0;j<this.tamanho;j++) {
-                var p=j;
-                if (p === limite) {
-                    continue;
-                } else {
-                    while (p-1 >= limite) {
-                        
-                        if ((this.casas[i][p-1].estaVazia() || this.casas[i][p-1].valor === this.casas[i][p].valor) && !this.casas[i][p-1].fechada){
-                            this.casas[i][p-1].valor += this.casas[i][p].valor;
-                            this.casas[i][p].valor = 0;
-                            this.casas[i][p-1].fechada = this.casas[i][p-1].estaVazia()?0:1;
-                        }
-                        
-                        p = p-1;
-                    }
-                }
-            }
-        }
-    };
-    this.moveRight = function () {
-        var i=0, j=0, limite=this.tamanho-1;
-        
-        this.iterar(this.casas, function () { this.fechada = 0; });
-        
-        for (i=0;i<this.tamanho;i++) {
-            for (j=limite;j>=0;j--) {
-                var p=j;
-                if (p === limite) {
-                    continue;
-                } else {
-                    while (p+1 <= limite) {
-                        
-                        if ((this.casas[i][p+1].estaVazia() || this.casas[i][p+1].valor === this.casas[i][p].valor) && !this.casas[i][p+1].fechada){
-                            this.casas[i][p+1].valor += this.casas[i][p].valor;
-                            this.casas[i][p].valor = 0;
-                            this.casas[i][p+1].fechada = this.casas[i][p+1].estaVazia()?0:1;
-                        }
-                        
-                        p = p+1;
-                    }
-                }
-            }
-        }
-    };
-    this.moveUp = function () {
-        var i=0, j=0, limite=0;
-        
-        this.iterar(this.casas, function () { this.fechada = 0; });
-        
-        for (i=0;i<this.tamanho;i++) {
-            for (j=limite;j<this.tamanho;j++) {
-                var p=j;
-                if (p === limite) {
-                    continue;
-                } else {
-                    while (p-1 >= limite) {
-                        
-                        if ((this.casas[p-1][i].estaVazia() || this.casas[p-1][i].valor === this.casas[p][i].valor) && !this.casas[p-1][i].fechada){
-                            this.casas[p-1][i].valor += this.casas[p][i].valor;
-                            this.casas[p][i].valor = 0;
-                            this.casas[p-1][i].fechada = this.casas[p-1][i].estaVazia()?0:1;
-                        }
-                        
-                        p = p-1;
-                    }
-                }
-            }
-        }
-    };
-    this.moveDown = function () {
-        var i=0, j=0, limite=this.tamanho-1;
-        
-        this.iterar(this.casas, function () { this.fechada = 0; });
-        
-        for (i=0;i<this.tamanho;i++) {
-            for (j=limite;j>=0;j--) {
-                var p=j;
-                if (p === limite) {
-                    continue;
-                } else {
-                    while (p+1 <= limite) {
-                        
-                        if ((this.casas[p+1][i].estaVazia() || this.casas[p+1][i].valor === this.casas[p][i].valor) && !this.casas[p+1][i].fechada){
-                            this.casas[p+1][i].valor += this.casas[p][i].valor;
-                            this.casas[p][i].valor = 0;
-                            this.casas[p+1][i].fechada = this.casas[p+1][i].estaVazia()?0:1;
-                        }
-                        
-                        p = p+1;
-                    }
-                }
-            }
-        }
-    };
     this.pintar = function () {
         var d, i, j;
-        for ( i = 0; i<this.tamanho; i++ ) {
-            for ( j = 0; j<this.tamanho; j++ ) {
-                d = document.getElementById('td'+ i + j);
+        for (i = 0; i < this.tamanho; i++) {
+            for (j = 0; j < this.tamanho; j++) {
+                d = document.getElementById('td' + i + j);
                 d.innerHTML = this.casas[i][j].valor;
             }
         }
@@ -239,46 +149,22 @@ var Tabuleiro = function () {
 var tabuleiro = null;
 
 function comecaJogo() {
+    'use strict';
+    
     tabuleiro = new Tabuleiro();
     tabuleiro.iniciar(4);
-    tabuleiro.iniciarCasa(2);
-    tabuleiro.iniciarCasa(2);
+  //  tabuleiro.iniciarCasa(2);
+//    tabuleiro.iniciarCasa(2);
+    tabuleiro.casas[0][0].valor = 0;
+    tabuleiro.casas[0][1].valor = 8;
+    tabuleiro.casas[0][2].valor = 8;
+    tabuleiro.casas[0][3].valor = 16;
     tabuleiro.pintar();
     
-    window.addEventListener("keydown", function(evt){
-        switch (evt.keyIdentifier) {
-            case "Left": 
-                tabuleiro.moveLeft();
-                tabuleiro.pintar();
-                tabuleiro.iniciarCasa(2);
-                tabuleiro.pintar();
-                break;
-            case "Right":
-                tabuleiro.moveRight();
-                tabuleiro.pintar();
-                tabuleiro.iniciarCasa(2);
-                tabuleiro.pintar();
-                break;
-            case "Up":
-                tabuleiro.moveUp();
-                tabuleiro.pintar();
-                tabuleiro.iniciarCasa(2);
-                tabuleiro.pintar();
-                break;
-            case "Down":
-                tabuleiro.moveDown();
-                tabuleiro.pintar();
-                tabuleiro.iniciarCasa(2);
-                tabuleiro.pintar();
-                break;
-            default:
-        }
+    window.addEventListener("keydown", function (evt) {
+        tabuleiro.movimento(evt.keyCode);
+        tabuleiro.pintar();
+        tabuleiro.iniciarCasa(2);
+        tabuleiro.pintar();
     });
 }
-
-
-
-
-
-
-var cont = 0;
