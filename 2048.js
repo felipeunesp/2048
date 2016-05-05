@@ -1,19 +1,22 @@
 
 var CasaTabuleiro = function () {
-        'use strict';
+    'use strict';
+    this.valor = 0;
+    this.fechada = 0;
+
+    this.reiniciar =  function () {
         this.valor = 0;
         this.fechada = 0;
-        this.reiniciar =  function () {
-            this.valor = 0;
-            this.fechada = 0;
-        };
-        this.estaVazia = function () {
-            return this.valor === 0;
-        };
-        this.setValor = function (valor) {
-            this.valor = valor || 0;
-        };
     };
+
+    this.estaVazia = function () {
+        return this.valor === 0;
+    };
+
+    this.setValor = function (valor) {
+        this.valor = valor || 0;
+    };
+};
 
 
 var Tabuleiro = function () {
@@ -22,7 +25,10 @@ var Tabuleiro = function () {
     
     this.tamanho = 4;
     this.iniciado = 0;
+    this.acabou = 0;
+    this.pontuacao = 0;
     this.casas = [];
+    
     this.iterar = function (obj, callback) {
         var i = 0, j = 0;
         
@@ -36,9 +42,18 @@ var Tabuleiro = function () {
 
         return obj;
     };
+    
     this.gameOver = function () {
-        return !this.iterar(this.casas, estaVazia);
+        var acabou = true;
+        
+        // verifica se há alguma vazia
+        this.iterar(this.casas, function () {
+            if (this.estaVazia()) {
+                acabou = false;
+            }
+        });
     };
+    
     this.iniciar = function (tamanho) {
         var i = 0, j = 0;
         
@@ -52,27 +67,31 @@ var Tabuleiro = function () {
                 }
             }
             this.iniciado = 1;
+            this.acabou = 0;
+            this.pontuacao = 0;
         }
         
         return true;
     };
+    
     this.casaRandom = function () {
         var x = Math.ceil(Math.random() * this.tamanho) - 1, y = Math.ceil(Math.random() * this.tamanho) - 1;
         
-        if (this.iniciado === 0) {
-            this.iniciar(this.tamanho);
-        }
+        this.iniciar(this.tamanho);
+        
         while (!this.casas[x][y].estaVazia()) {
             x = Math.ceil(Math.random() * this.tamanho) - 1;
             y = Math.ceil(Math.random() * this.tamanho) - 1;
         }
         return this.casas[x][y];
     };
+    
     this.iniciarCasa = function (valor) {
         var casa = this.casaRandom(), valorCasa = valor || 2;
         
         casa.setValor(valorCasa);
     };
+    
     this.retornaEixos = function (direcao) {
         switch (direcao) {
         case 37: // esquerda
@@ -89,7 +108,7 @@ var Tabuleiro = function () {
     };
     
     this.movimento = function (direcao) {
-        var i = 0, j = 0, limite = 0, eixo, transversal, eixos, p, atual, proximo;
+        var i = 0, j = 0, limite = 0, movimentou = false, eixo, transversal, eixos, p, atual, proximo;
         
         this.iterar(this.casas, function () { this.fechada = 0; });
         
@@ -125,23 +144,35 @@ var Tabuleiro = function () {
                         atual.fechada = atual.estaVazia() ? 0 : 1;
                         atual.valor += proximo.valor;
                         proximo.valor = 0;
-                    } else if (!atual.estaVazia() && atual.valor !== proximo.valor) {
+                        this.pontuacao += atual.valor;
+                        movimentou = true;
+                    } else if (!atual.estaVazia() && atual.valor !== proximo.valor && proximo.valor !== 0) {
                         atual.fechada = 1;
                     }
                     p = p + 1;
                 }
             }
         }
+        return movimentou;
     };
         
     this.pintar = function () {
-        var d, i, j;
+        var d, i, j, placar;
+        
+        placar = document.getElementById('div_pontuacao');
+        placar.innerHTML = this.pontuacao;
+        
         for (i = 0; i < this.tamanho; i++) {
             for (j = 0; j < this.tamanho; j++) {
                 d = document.getElementById('td' + i + j);
                 d.innerHTML = this.casas[i][j].valor;
             }
         }
+    };
+    
+    this.randomNumeroInicial = function () {
+        var numInicial = Math.floor(Math.random * 100) + 1;
+        return (numInicial <= 92) ? 2 : 4;
     };
 };
 
@@ -152,19 +183,23 @@ function comecaJogo() {
     'use strict';
     
     tabuleiro = new Tabuleiro();
-    tabuleiro.iniciar(4);
-  //  tabuleiro.iniciarCasa(2);
-//    tabuleiro.iniciarCasa(2);
-    tabuleiro.casas[0][0].valor = 0;
-    tabuleiro.casas[0][1].valor = 8;
-    tabuleiro.casas[0][2].valor = 8;
-    tabuleiro.casas[0][3].valor = 16;
+    tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
+    tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
     tabuleiro.pintar();
     
     window.addEventListener("keydown", function (evt) {
-        tabuleiro.movimento(evt.keyCode);
-        tabuleiro.pintar();
-        tabuleiro.iniciarCasa(2);
-        tabuleiro.pintar();
+        if (!tabuleiro.gameOver()) {
+            tabuleiro.movimento(evt.keyCode);
+            tabuleiro.pintar();
+            tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
+            tabuleiro.pintar();
+        } else {
+            tabuleiro.iniciado = 0;
+            if (confirm('O jogo acabou. Deseja reiniciar?')) {
+                tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
+                tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
+                tabuleiro.pintar();
+            }
+        }
     });
 }
