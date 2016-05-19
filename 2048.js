@@ -171,7 +171,7 @@ var Tabuleiro = function () {
     };
     
     this.randomNumeroInicial = function () {
-        var numInicial = Math.floor(Math.random * 100) + 1;
+        var numInicial = Math.floor(Math.random() * 100) + 1;
         return (numInicial <= 92) ? 2 : 4;
     };
 };
