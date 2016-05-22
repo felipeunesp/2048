@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="1" height="12" tilewidth="200" tileheight="200" nextobjectid="1">
+ <tileset firstgid="1" name="2048tiles" tilewidth="200" tileheight="200" tilecount="12" columns="0">
+  <tile id="0">
+   <image width="200" height="200" source="tile0.png"/>
+  </tile>
+  <tile id="1">
+   <image width="200" height="200" source="tile2.png"/>
+  </tile>
+  <tile id="2">
+   <image width="200" height="200" source="tile4.png"/>
+  </tile>
+  <tile id="3">
+   <image width="200" height="200" source="tile8.png"/>
+  </tile>
+  <tile id="4">
+   <image width="200" height="200" source="tile16.png"/>
+  </tile>
+  <tile id="5">
+   <image width="200" height="200" source="tile32.png"/>
+  </tile>
+  <tile id="6">
+   <image width="200" height="200" source="tile64.png"/>
+  </tile>
+  <tile id="7">
+   <image width="200" height="200" source="tile128.png"/>
+  </tile>
+  <tile id="8">
+   <image width="200" height="200" source="tile256.png"/>
+  </tile>
+  <tile id="9">
+   <image width="200" height="200" source="tile512.png"/>
+  </tile>
+  <tile id="10">
+   <image width="200" height="200" source="tile1024.png"/>
+  </tile>
+  <tile id="11">
+   <image width="200" height="200" source="tile2048.png"/>
+  </tile>
+ </tileset>
+ <layer name="Camada de Tiles 1" width="1" height="12">
+  <data encoding="csv">
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+</data>
+ </layer>
+</map>
