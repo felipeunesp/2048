@@ -1,13 +1,15 @@
-{ "height":12,
+var tileset2048json = 
+{ "height":4,
+  "width":4,
  "layers":[
         {
-         "data":[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-         "height":12,
+         "data":[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+         "height":4,
          "name":"Camada de Tiles 1",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":1,
+         "width":4,
          "x":0,
          "y":0
         }],
@@ -17,13 +19,14 @@
  "tileheight":200,
  "tilesets":[
         {
-         "columns":0,
+         "columns":4,
          "firstgid":1,
          "margin":0,
          "name":"2048tiles",
          "spacing":0,
-         "tilecount":12,
+         "tilecount":16,
          "tileheight":200,
+         "image":true,
          "tiles":
             {
              "0":
@@ -32,52 +35,67 @@
                 },
              "1":
                 {
-                 "image":"tile2.png"
+                 "image":"tile0.png"
                 },
              "10":
                 {
-                 "image":"tile1024.png"
+                 "image":"tile0.png"
                 },
              "11":
                 {
-                 "image":"tile2048.png"
+                 "image":"tile0.png"
+                },
+             "12":
+                {
+                 "image":"tile0.png"
+                },
+             "13":
+                {
+                 "image":"tile0.png"
+                },
+             "14":
+                {
+                 "image":"tile0.png"
+                },
+             "15":
+                {
+                 "image":"tile0.png"
                 },
              "2":
                 {
-                 "image":"tile4.png"
+                 "image":"tile0.png"
                 },
              "3":
                 {
-                 "image":"tile8.png"
+                 "image":"tile0.png"
                 },
              "4":
                 {
-                 "image":"tile16.png"
+                 "image":"tile0.png"
                 },
              "5":
                 {
-                 "image":"tile32.png"
+                 "image":"tile0.png"
                 },
              "6":
                 {
-                 "image":"tile64.png"
+                 "image":"tile0.png"
                 },
              "7":
                 {
-                 "image":"tile128.png"
+                 "image":"tile0.png"
                 },
              "8":
                 {
-                 "image":"tile256.png"
+                 "image":"tile0.png"
                 },
              "9":
                 {
-                 "image":"tile512.png"
+                 "image":"tile0.png"
                 }
             },
          "tilewidth":200
         }],
  "tilewidth":200,
- "version":1,
- "width":1
-}
+ "version":1
+};

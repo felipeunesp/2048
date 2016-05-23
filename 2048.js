@@ -1,4 +1,3 @@
-
 var CasaTabuleiro = function () {
     'use strict';
     this.valor = 0;
@@ -43,15 +42,35 @@ var Tabuleiro = function () {
         return obj;
     };
     
-    this.gameOver = function () {
-        var acabou = true;
-        
-        // verifica se há alguma vazia
+    this.haAlgumaCasaVazia = function () {
+        var vazia = false;
+
         this.iterar(this.casas, function () {
             if (this.estaVazia()) {
-                acabou = false;
+                vazia = true;
             }
         });
+        
+        return vazia;
+    };
+    
+    this.gameOver = function () {
+        var acabou = true, i = 0, j = 0;
+        
+        // verifica se há alguma vazia
+        acabou = !this.haAlgumaCasaVazia();
+        
+        if (acabou) {
+            for (i = 0; i < (this.tamanho - 1) && acabou; i++) {
+                for (j = 0; j < (this.tamanho - 1) && acabou; j++) {
+                    if (this.casas[i][j].valor === this.casas[i + 1][j].valor || this.casas[i][j].valor === this.casas[i][j + 1].valor) {
+                        acabou = false;  
+                    }
+                }
+            }
+        }
+        
+        return acabou;
     };
     
     this.iniciar = function (tamanho) {
@@ -191,8 +210,10 @@ function comecaJogo() {
         if (!tabuleiro.gameOver()) {
             tabuleiro.movimento(evt.keyCode);
             tabuleiro.pintar();
-            tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
-            tabuleiro.pintar();
+            if (tabuleiro.haAlgumaCasaVazia()) {
+                tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
+                tabuleiro.pintar();
+            }
         } else {
             tabuleiro.iniciado = 0;
             if (confirm('O jogo acabou. Deseja reiniciar?')) {
