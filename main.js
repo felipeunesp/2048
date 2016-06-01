@@ -1,6 +1,11 @@
+/**
+ * core phaser game
+ *
+ * usa a logica em 2048 js e monta o jogo
+ *
+ **/
 
-
-function iniciaJogo () {
+(function () {
     var jogo = new Phaser.Game( 800, 800, Phaser.AUTO, 'containerJogo');
     var tabuleiro = new Tabuleiro();
     var map;
@@ -67,6 +72,8 @@ function iniciaJogo () {
                 tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
             }
         }
+
+        console.log(tabuleiro.pontuacao);
     }
 
 
@@ -78,10 +85,12 @@ function iniciaJogo () {
         
         dimension = width > height ? height : width;
 
+        document.getElementById('containerPrincipal').style = "width: " + dimension + "px;";
+
         return dimension;
     }
 
     jogo.state.add('estado', estado);
 
     jogo.state.start('estado');   
-}
+} () );

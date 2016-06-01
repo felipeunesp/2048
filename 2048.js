@@ -61,8 +61,8 @@ var Tabuleiro = function () {
         acabou = !this.haAlgumaCasaVazia();
         
         if (acabou) {
-            for (i = 0; i < (this.tamanho - 1) && acabou; i++) {
-                for (j = 0; j < (this.tamanho - 1) && acabou; j++) {
+            for (i = 0; i < (this.tamanho) && acabou; i++) {
+                for (j = 0; j < (this.tamanho) && acabou; j++) {
                     if (this.casas[i][j].valor === this.casas[i + 1][j].valor || this.casas[i][j].valor === this.casas[i][j + 1].valor) {
                         acabou = false;  
                     }
@@ -114,13 +114,13 @@ var Tabuleiro = function () {
     this.retornaEixos = function (direcao) {
         switch (direcao) {
         case 37: // esquerda
-            return { x: [0, 1, 2, 3], y: [0, 1, 2, 3], ordem: "linha"};
+            return {x: [0, 1, 2, 3], y: [0, 1, 2, 3], ordem: "linha"};
         case 39: // direita
-            return { x: [0, 1, 2, 3], y: [3, 2, 1, 0], ordem: "linha"};
+            return {x: [0, 1, 2, 3], y: [3, 2, 1, 0], ordem: "linha"};
         case 38: // cima
-            return { x: [0, 1, 2, 3], y: [0, 1, 2, 3], ordem: "coluna"};
+            return {x: [0, 1, 2, 3], y: [0, 1, 2, 3], ordem: "coluna"};
         case 40: // baixo
-            return { x: [3, 2, 1, 0], y: [0, 1, 2, 3], ordem: "coluna"};
+            return {x: [3, 2, 1, 0], y: [0, 1, 2, 3], ordem: "coluna"};
         default:
             return null;
         }
@@ -163,7 +163,7 @@ var Tabuleiro = function () {
                         atual.fechada = atual.estaVazia() ? 0 : 1;
                         atual.valor += proximo.valor;
                         proximo.valor = 0;
-                        this.pontuacao += atual.valor;
+                        this.pontuacao += atual.fechada === 1 ? atual.valor : 0;
                         movimentou = true;
                     } else if (!atual.estaVazia() && atual.valor !== proximo.valor && proximo.valor !== 0) {
                         atual.fechada = 1;
