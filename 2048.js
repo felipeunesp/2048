@@ -63,8 +63,17 @@ var Tabuleiro = function () {
         if (acabou) {
             for (i = 0; i < (this.tamanho) && acabou; i++) {
                 for (j = 0; j < (this.tamanho) && acabou; j++) {
-                    if (this.casas[i][j].valor === this.casas[i + 1][j].valor || this.casas[i][j].valor === this.casas[i][j + 1].valor) {
-                        acabou = false;  
+                    
+                    if (i + 1 < this.tamanho) {
+                        if (this.casas[i][j].valor === this.casas[i + 1][j].valor) {
+                            return false;
+                        }
+                    }
+                    
+                    if (j + 1 < this.tamanho) {
+                        if (this.casas[i][j].valor === this.casas[i][j + 1].valor) { 
+                            return false;
+                        }
                     }
                 }
             }

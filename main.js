@@ -61,8 +61,7 @@
 
     function tratarTeclas (key) {
         if (!tabuleiro.gameOver()) {
-            tabuleiro.movimento(key.keyCode);
-            if (tabuleiro.haAlgumaCasaVazia()) {
+            if (tabuleiro.movimento(key.keyCode) && tabuleiro.haAlgumaCasaVazia()) {
                 tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
             }
         } else {
@@ -73,7 +72,7 @@
             }
         }
 
-        console.log(tabuleiro.pontuacao);
+        document.getElementById('painelScore').textContent = tabuleiro.pontuacao;
     }
 
 
