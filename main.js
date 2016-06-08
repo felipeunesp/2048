@@ -9,8 +9,20 @@
     var jogo = new Phaser.Game( 800, 800, Phaser.AUTO, 'containerJogo');
     var tabuleiro = new Tabuleiro();
     var map;
+    
+    var prejogo = {
+        preload: function () {
+            var textura = new Phaser.RenderTexture( this.game, 'spritecontrole', 800, 800);
+        },
+        create: function () {
+            this.game.add.renderTexture(800, 800, 'spritecontrole', true);
+        },
+        update: function () {
+            
+        }
+    }
 
-    var estado = {
+    var estadojogo = {
 
         preload:  function () {
             this.load.tilemap('tilemap2048', 'assets/tiled2048.csv');
@@ -44,7 +56,7 @@
             this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
             this.leftKey.onDown.add( tratarTeclas, this);
 
-            console.log( this.game.time);
+            console.log( this.game.world);
         },
 
         update: function () {
@@ -89,7 +101,8 @@
         return dimension;
     }
 
-    jogo.state.add('estado', estado);
-
-    jogo.state.start('estado');   
+    jogo.state.add('prejogo', prejogo); 
+    jogo.state.add('estadojogo', estadojogo);
+    
+    jogo.state.start('prejogo');   
 } () );
