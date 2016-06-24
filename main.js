@@ -8,41 +8,66 @@
 (function () {
     var jogo = new Phaser.Game( 800, 800, Phaser.AUTO, 'containerJogo');
     var tabuleiro = new Tabuleiro();
-    var map;
+    var map, imgt;
     
     var prejogo = {
+        
+        textura: null, 
+        
+        imagem: null,
+        
         preload: function () {
-            var textura = new Phaser.RenderTexture( this.game, 'spritecontrole', 800, 800);
+            this.load.tilemap('tilemap2048', 'assets/tiled2048.csv');
+            this.load.image('tilesetimage', 'assets/tiles.png');
+            this.load.image('imagetextura', 'assets/textura.png');
         },
         create: function () {
-            this.game.add.renderTexture(800, 800, 'spritecontrole', true);
+            imgt = this.add.image(0, 0, 'imagetextura');
+
+            tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
+            tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
+
+            map = this.add.tilemap('tilemap2048', 200, 200);
+            map.addTilesetImage('tileset2048', 'tilesetimage', 200, 200);
+            
+            this.resizeGame();
+            
         },
         update: function () {
+
+        }, 
+        resizeGame: function () {
+            var height = 800, width = 800, dimension = 800, scale=1, scale2=1;
+        
+            height = 0.8 * (window.innerHeight * window.devicePixelRatio) > 800 ? 800 : 0.8 * (window.innerHeight * window.devicePixelRatio);
+            width = 0.8 * (window.innerWidth * window.devicePixelRatio) > 800 ? 800 : 0.8 * (window.innerWidth * window.devicePixelRatio);
+
+            dimension = width > height ? height : width;
+            scale = dimension / 800;
+            scale2 = dimension / 40;
+
+            document.getElementById('containerPrincipal').style = "width: " + dimension + "px;";
             
+            this.backgroundLayer = map.createLayer(0);
+            this.backgroundLayer.scale = new Phaser.Point(scale, scale);
+            
+            imgt.scale = new Phaser.Point( scale2, scale2);
+            imgt.bringToTop();
+
+            this.game.scale.setGameSize(dimension, dimension);
+ 
         }
     }
+    
 
     var estadojogo = {
 
         preload:  function () {
-            this.load.tilemap('tilemap2048', 'assets/tiled2048.csv');
-            this.load.image('tilesetimage', 'assets/tiles.png');
+
         },
 
         create: function () {
-            var dimension = redimensionarJogo();
-            var d = dimension / 800;
 
-            tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
-            tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
-
-            map = this.game.add.tilemap('tilemap2048', 200, 200);
-            map.addTilesetImage('tileset2048', 'tilesetimage', 200, 200);
-
-            this.backgroundLayer = map.createLayer(0);
-            this.backgroundLayer.scale = new Phaser.Point(d, d);
-
-            this.game.scale.setGameSize(dimension, dimension);
 
             this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
             this.downKey.onDown.add( tratarTeclas, this);
@@ -55,8 +80,6 @@
 
             this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
             this.leftKey.onDown.add( tratarTeclas, this);
-
-            console.log( this.game.world);
         },
 
         update: function () {
@@ -85,20 +108,6 @@
         }
 
         document.getElementById('painelScore').textContent = tabuleiro.pontuacao;
-    }
-
-
-    function redimensionarJogo () {
-        var height = 800, width = 800, dimension = 800;
-        
-        height = 0.8 * (window.innerHeight * window.devicePixelRatio) > 800 ? 800 : 0.8 * (window.innerHeight * window.devicePixelRatio);
-        width = 0.8 * (window.innerWidth * window.devicePixelRatio) > 800 ? 800 : 0.8 * (window.innerWidth * window.devicePixelRatio);
-        
-        dimension = width > height ? height : width;
-
-        document.getElementById('containerPrincipal').style = "width: " + dimension + "px;";
-
-        return dimension;
     }
 
     jogo.state.add('prejogo', prejogo); 
