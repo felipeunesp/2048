@@ -1,4 +1,3 @@
-
 var CasaTabuleiro = function () {
     'use strict';
     this.valor = 0;
@@ -21,7 +20,6 @@ var CasaTabuleiro = function () {
 
 var Tabuleiro = function () {
     'use strict';
-    var i = 0, j = 0;
     
     this.tamanho = 4;
     this.iniciado = 0;
@@ -62,10 +60,19 @@ var Tabuleiro = function () {
         acabou = !this.haAlgumaCasaVazia();
         
         if (acabou) {
-            for (i = 0; i < (this.tamanho - 1) && acabou; i++) {
-                for (j = 0; j < (this.tamanho - 1) && acabou; j++) {
-                    if (this.casas[i][j].valor === this.casas[i + 1][j].valor || this.casas[i][j].valor === this.casas[i][j + 1].valor) {
-                        acabou = false;  
+            for (i = 0; i < (this.tamanho) && acabou; i++) {
+                for (j = 0; j < (this.tamanho) && acabou; j++) {
+                    
+                    if (i + 1 < this.tamanho) {
+                        if (this.casas[i][j].valor === this.casas[i + 1][j].valor) {
+                            return false;
+                        }
+                    }
+                    
+                    if (j + 1 < this.tamanho) {
+                        if (this.casas[i][j].valor === this.casas[i][j + 1].valor) { 
+                            return false;
+                        }
                     }
                 }
             }
@@ -115,13 +122,13 @@ var Tabuleiro = function () {
     this.retornaEixos = function (direcao) {
         switch (direcao) {
         case 37: // esquerda
-            return { x: [0, 1, 2, 3], y: [0, 1, 2, 3], ordem: "linha"};
+            return {x: [0, 1, 2, 3], y: [0, 1, 2, 3], ordem: "linha"};
         case 39: // direita
-            return { x: [0, 1, 2, 3], y: [3, 2, 1, 0], ordem: "linha"};
+            return {x: [0, 1, 2, 3], y: [3, 2, 1, 0], ordem: "linha"};
         case 38: // cima
-            return { x: [0, 1, 2, 3], y: [0, 1, 2, 3], ordem: "coluna"};
+            return {x: [0, 1, 2, 3], y: [0, 1, 2, 3], ordem: "coluna"};
         case 40: // baixo
-            return { x: [3, 2, 1, 0], y: [0, 1, 2, 3], ordem: "coluna"};
+            return {x: [3, 2, 1, 0], y: [0, 1, 2, 3], ordem: "coluna"};
         default:
             return null;
         }
@@ -164,8 +171,8 @@ var Tabuleiro = function () {
                         atual.fechada = atual.estaVazia() ? 0 : 1;
                         atual.valor += proximo.valor;
                         proximo.valor = 0;
-                        this.pontuacao += atual.valor;
-                        movimentou = true;
+                        this.pontuacao += atual.fechada === 1 ? atual.valor : 0;
+                        if ( atual.valor > 0 ) { movimentou = true };
                     } else if (!atual.estaVazia() && atual.valor !== proximo.valor && proximo.valor !== 0) {
                         atual.fechada = 1;
                     }
@@ -208,10 +215,11 @@ function comecaJogo() {
     tabuleiro.pintar();
     
     window.addEventListener("keydown", function (evt) {
+        var movimentou = false;
         if (!tabuleiro.gameOver()) {
-            tabuleiro.movimento(evt.keyCode);
+            movimentou = tabuleiro.movimento(evt.keyCode);
             tabuleiro.pintar();
-            if (tabuleiro.haAlgumaCasaVazia()) {
+            if (tabuleiro.haAlgumaCasaVazia() && movimentou) {
                 tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
                 tabuleiro.pintar();
             }
