@@ -20,7 +20,6 @@ var CasaTabuleiro = function () {
 
 var Tabuleiro = function () {
     'use strict';
-    var i = 0, j = 0;
     
     this.tamanho = 4;
     this.iniciado = 0;
@@ -173,7 +172,7 @@ var Tabuleiro = function () {
                         atual.valor += proximo.valor;
                         proximo.valor = 0;
                         this.pontuacao += atual.fechada === 1 ? atual.valor : 0;
-                        movimentou = true;
+                        if ( atual.valor > 0 ) { movimentou = true };
                     } else if (!atual.estaVazia() && atual.valor !== proximo.valor && proximo.valor !== 0) {
                         atual.fechada = 1;
                     }
@@ -216,10 +215,11 @@ function comecaJogo() {
     tabuleiro.pintar();
     
     window.addEventListener("keydown", function (evt) {
+        var movimentou = false;
         if (!tabuleiro.gameOver()) {
-            tabuleiro.movimento(evt.keyCode);
+            movimentou = tabuleiro.movimento(evt.keyCode);
             tabuleiro.pintar();
-            if (tabuleiro.haAlgumaCasaVazia()) {
+            if (tabuleiro.haAlgumaCasaVazia() && movimentou) {
                 tabuleiro.iniciarCasa(tabuleiro.randomNumeroInicial());
                 tabuleiro.pintar();
             }
